@@ -36,6 +36,7 @@ jobs:
         mkdir -p EmptyEpsilonAppImageDir/usr/bin
         cp EmptyEpsilon/_build/EmptyEpsilon EmptyEpsilonAppImageDir/usr/bin
         cp -r EmptyEpsilon/resources EmptyEpsilonAppImageDir/usr/bin
+        cp -r EmptyEpsilon/scripts EmptyEpsilonAppImageDir/usr/bin
 
         git clone --depth 1 https://github.com/vpelss/EmptyEpsilon_AppImage.git
         #place AppRun script in EmptyEpsilonAppImageDir

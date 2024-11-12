@@ -1,10 +1,10 @@
-I built on a modern linux (Zorin), but best AppImage practices suggest building on an older CentOs or equivalent for wider compatibility.
-So far my attempt to create a Github Action to build has failed.
+#I built on a modern linux (Zorin), but best AppImage practices suggest building on an older CentOs or equivalent for wider compatibility.
+#So far my attempt to create a Github Action to build has failed.
 
-----------------
+#----------------
 
-As per the following:
-https://github.com/daid/EmptyEpsilon/wiki/Build-%E2%80%90-Linux-%E2%80%90-Debian
+#As per the following:
+#https://github.com/daid/EmptyEpsilon/wiki/Build-%E2%80%90-Linux-%E2%80%90-Debian
 
 sudo apt-get install git build-essential cmake ninja-build zip unzip libsdl2-dev libfreetype6-dev
 

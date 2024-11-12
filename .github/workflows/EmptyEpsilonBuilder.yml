@@ -59,10 +59,10 @@ jobs:
         chmod 777 EmptyEpsilon-x86_64.AppImage
 
         #run it
-        #./EmptyEpsilon-x86_64.AppImage
+        ./EmptyEpsilon-x86_64.AppImage  --appimage-extract 
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: ee_AppImage
-        path: EmptyEpsilon-x86_64.AppImage
+        path: EmptyEpsilon-x86_64.AppImage 

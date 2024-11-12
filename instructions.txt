@@ -1,7 +1,7 @@
 #My build instructions to create a Linux AppImage distributio for EmptyEpsilon 
 #https://github.com/daid/EmptyEpsilon
 #I built on a modern linux installation (Zorin), but best AppImage practices suggest building on an older CentOs or equivalent for wider compatibility.
-#My github action build was build using ubuntu 20.4
+#My github action build was build using ubuntu 20.04
 
 #----------------
 

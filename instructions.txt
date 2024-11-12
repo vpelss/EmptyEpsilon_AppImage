@@ -1,4 +1,6 @@
-#I built on a modern linux (Zorin), but best AppImage practices suggest building on an older CentOs or equivalent for wider compatibility.
+#My build instructions to create a Linux AppImage distributio for EmptyEpsilon 
+#https://github.com/daid/EmptyEpsilon
+#I built on a modern linux installation (Zorin), but best AppImage practices suggest building on an older CentOs or equivalent for wider compatibility.
 #So far my attempt to create a Github Action to build has failed.
 
 #----------------

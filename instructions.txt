@@ -1,0 +1,49 @@
+I built on a modern linux (Zorin), but best AppImage practices suggest building on an older CentOs or equivalent for wider compatibility.
+So far my attempt to create a Github Action to build has failed.
+
+----------------
+
+As per the following:
+https://github.com/daid/EmptyEpsilon/wiki/Build-%E2%80%90-Linux-%E2%80%90-Debian
+
+sudo apt-get install git build-essential cmake ninja-build zip unzip libsdl2-dev libfreetype6-dev
+
+git clone --depth 1 https://github.com/daid/EmptyEpsilon.git
+git clone --depth 1 https://github.com/daid/SeriousProton.git
+cd EmptyEpsilon
+mkdir -p _build
+cd _build
+cmake .. -G Ninja -DSERIOUS_PROTON_DIR=$PWD/../../SeriousProton/
+ninja
+cd ../..
+
+mkdir -p EmptyEpsilonAppImageDir/usr/bin
+cp EmptyEpsilon/_build/EmptyEpsilon EmptyEpsilonAppImageDir/usr/bin
+cp -r EmptyEpsilon/resources EmptyEpsilonAppImageDir/usr/bin
+
+git clone --depth 1 https://github.com/vpelss/EmptyEpsilon_AppImage.git
+#place AppRun script in EmptyEpsilonAppImageDir
+cp EmptyEpsilon_AppImage/AppRun EmptyEpsilonAppImageDir
+#place emptyepsilon.desktop in EmptyEpsilonAppImageDir
+cp EmptyEpsilon_AppImage/EmptyEpsilon.desktop EmptyEpsilonAppImageDir
+#place icon.png in EmptyEpsilonAppImageDir
+cp EmptyEpsilon_AppImage/icon.png EmptyEpsilonAppImageDir
+
+#set permissions
+
+chmod +x EmptyEpsilonAppImageDir/AppRun 
+chmod +x EmptyEpsilonAppImageDir/usr/bin/EmptyEpsilon
+chmod +x EmptyEpsilonAppImageDir/EmptyEpsilon.desktop
+
+# get linuxdeploy's AppImage if you don’t have it
+# https://github.com/linuxdeploy/linuxdeploy
+# https://github.com/linuxdeploy/linuxdeploy/releases/
+wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+chmod +x linuxdeploy-x86_64.AppImage
+
+#run linuxdeploy and fix up generate an AppDir (add lib) and build AppImage 
+ARCH=x86_64 ./linuxdeploy-x86_64.AppImage -v 0 --appdir EmptyEpsilonAppImageDir --output appimage
+chmod 777 EmptyEpsilon-x86_64.AppImage
+
+#run it
+./EmptyEpsilon-x86_64.AppImage

@@ -21,7 +21,7 @@ jobs:
 
     - name: Configure MakeIt
       run: |      
-        apt-get install ninja-build
+        sudo apt-get install ninja-build
         git clone --depth 1 https://github.com/daid/EmptyEpsilon.git
         git clone --depth 1 https://github.com/daid/SeriousProton.git
         cd EmptyEpsilon

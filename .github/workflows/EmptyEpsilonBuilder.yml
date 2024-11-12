@@ -1,8 +1,6 @@
 name: EmptyEpsilonBuilder
 
-on:
-  pull_request:
-  push:
+on: workflow_dispatch
     branches: [ "main" ]
     
 env:

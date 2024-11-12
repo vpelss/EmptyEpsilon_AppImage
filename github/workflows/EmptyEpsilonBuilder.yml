@@ -1,0 +1,70 @@
+name: EmptyEpsilonBuilder
+
+on:
+  pull_request:
+  push:
+    branches: [ "main" ]
+    
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
+    # You can convert this to a matrix build if you need cross-platform coverage.
+    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Configure MakeIt
+      run: |      
+        git clone --depth 1 https://github.com/daid/EmptyEpsilon.git
+        git clone --depth 1 https://github.com/daid/SeriousProton.git
+        cd EmptyEpsilon
+        mkdir -p _build
+        cd _build
+        cmake .. -G Ninja -DSERIOUS_PROTON_DIR=$PWD/../../SeriousProton/
+        ninja
+        cd ../..
+
+    - name: Build
+      # Build your program with the given configuration
+      run: |
+        mkdir -p EmptyEpsilonAppImageDir/usr/bin
+        cp EmptyEpsilon/_build/EmptyEpsilon EmptyEpsilonAppImageDir/usr/bin
+        cp -r EmptyEpsilon/resources EmptyEpsilonAppImageDir/usr/bin
+
+        git clone --depth 1 https://github.com/vpelss/EmptyEpsilon_AppImage.git
+        #place AppRun script in EmptyEpsilonAppImageDir
+        cp EmptyEpsilon_AppImage/AppRun EmptyEpsilonAppImageDir
+        #place emptyepsilon.desktop in EmptyEpsilonAppImageDir
+        cp EmptyEpsilon_AppImage/EmptyEpsilon.desktop EmptyEpsilonAppImageDir
+        #place icon.png in EmptyEpsilonAppImageDir
+        cp EmptyEpsilon_AppImage/icon.png EmptyEpsilonAppImageDir
+
+        #set permissions
+        chmod +x EmptyEpsilonAppImageDir/AppRun 
+        chmod +x EmptyEpsilonAppImageDir/usr/bin/EmptyEpsilon
+        chmod +x EmptyEpsilonAppImageDir/EmptyEpsilon.desktop
+
+        # get linuxdeploy's AppImage if you don’t have it
+        # https://github.com/linuxdeploy/linuxdeploy
+        # https://github.com/linuxdeploy/linuxdeploy/releases/
+        wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+        chmod +x linuxdeploy-x86_64.AppImage
+
+        #run linuxdeploy and fix up generate an AppDir (add lib) and build AppImage 
+        ARCH=x86_64 ./linuxdeploy-x86_64.AppImage -v 0 --appdir EmptyEpsilonAppImageDir --output appimage
+        chmod 777 EmptyEpsilon-x86_64.AppImage
+
+        #run it
+        ./EmptyEpsilon-x86_64.AppImage
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ee_AppImage
+        path: EmptyEpsilon-x86_64.AppImage

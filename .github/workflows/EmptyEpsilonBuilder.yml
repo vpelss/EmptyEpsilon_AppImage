@@ -104,4 +104,4 @@ jobs:
       #if: ${{startsWith(github.ref, 'refs/tags/') }}
       with:
           tag_name: "download"
-          files: Space_Nerds_in_Space-${{ matrix.ARCH }}.AppImage 
+          files: EmptyEpsilon-${{ matrix.ARCH }}.AppImage 

@@ -2,21 +2,45 @@ name: EmptyEpsilonBuilder
 
 on: workflow_dispatch
     
-env:
-  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  BUILD_TYPE: Release
-
 jobs:
-  build:
-    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
-    # You can convert this to a matrix build if you need cross-platform coverage.
-    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
-    runs-on: ubuntu-20.04
-    #container: centos:7
+  build-and-test:
+    strategy:
+      matrix:
+        include:
+          - ARCH: x86_64
+            RUNS_ON: ubuntu-24.04
+            BUILD_TYPE: appimage
+          - ARCH: aarch64
+            RUNS_ON: ubuntu-22.04-arm
+            BUILD_TYPE: appimage
+      fail-fast: false
+
+    name: SNIS ${{ matrix.BUILD_TYPE }} ${{ matrix.ARCH }}
+    runs-on: ${{ matrix.RUNS_ON }}
+    
+    env:
+      ARCH: ${{ matrix.ARCH }}
+      BUILD_TYPE: ${{ matrix.BUILD_TYPE }}
+      # make sure to always(!) pull the base image
+      UPDATE: 1
 
     steps:
     - uses: actions/checkout@v4
 
+    - name: get linuxdeploy-x86_64.AppImage
+      if: ${{ matrix.ARCH == 'x86_64' }} 
+      run: |      
+        wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+        mv linuxdeploy-x86_64.AppImage linuxdeploy.AppImage
+        chmod +x linuxdeploy.AppImage  
+    - name: get linuxdeploy-aarch64.AppImage
+      if: ${{ matrix.ARCH == 'aarch64' }}
+      run: |
+        #wget https://github.com/linuxdeploy/linuxdeploy/releases/download/1-alpha-20250213-2/linuxdeploy-aarch64.AppImage
+        wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-aarch64.AppImage
+        mv linuxdeploy-aarch64.AppImage linuxdeploy.AppImage
+        chmod +x linuxdeploy.AppImage  
+        
     - name: Configure MakeIt
       run: |      
         sudo apt install libfuse2 #required to build AppImage
@@ -52,6 +76,8 @@ jobs:
         chmod +x EmptyEpsilonAppImageDir/usr/bin/EmptyEpsilon
         chmod +x EmptyEpsilonAppImageDir/EmptyEpsilon.desktop
 
+
+
         # get linuxdeploy's AppImage if you don’t have it
         # https://github.com/linuxdeploy/linuxdeploy
         # https://github.com/linuxdeploy/linuxdeploy/releases/
@@ -59,8 +85,10 @@ jobs:
         chmod +x linuxdeploy-x86_64.AppImage
 
         #run linuxdeploy and fix up generate an AppDir (add lib) and build AppImage 
-        ARCH=x86_64 ./linuxdeploy-x86_64.AppImage -v 0 --appdir EmptyEpsilonAppImageDir --output appimage
-        chmod 777 EmptyEpsilon-x86_64.AppImage
+        #ARCH=x86_64 ./linuxdeploy-x86_64.AppImage -v 0 --appdir EmptyEpsilonAppImageDir --output appimage
+        ARCH=${{ matrix.ARCH }} ./linuxdeploy.AppImage --deploy-deps-only=$AppDir/usr/bin/bin --appdir $AppDir --output appimage
+        
+        chmod 777 EmptyEpsilon-${{ matrix.ARCH }}.AppImage
 
         #run it
         #./EmptyEpsilon-x86_64.AppImage

@@ -96,8 +96,8 @@ jobs:
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: EmptyEpsilon-${{ matrix.ARCH }.AppImage 
-        path: EmptyEpsilon-${{ matrix.ARCH }.AppImage 
+        name: EmptyEpsilon-${{ matrix.ARCH }}.AppImage 
+        path: EmptyEpsilon-${{ matrix.ARCH }}.AppImage 
 
     - name: upload binaries to release
       uses: softprops/action-gh-release@v2

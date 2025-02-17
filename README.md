@@ -15,13 +15,14 @@ Note: It is easiest to start in a Linux terminal. Making a launchable icon is po
 
 - Download
 - in a terminal run the following
-
   
 ```
 chmod +x EmptyEpsilon-x86_64.AppImage
 ./EmptyEpsilon-x86_64.AppImage
 
 ```
+
+Or if you make the file executable, your distro might just allow you to double click on it to run.
 
 #Make a Desktop Icon
 
